@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Green Roots | Tree Planting Tracker</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --forest: #1A4D2E;
+        --leaf: #4F6F52;
+        --sage: #739072;
+        --sand: #E8DFCA;
+        --cream: #F5EFE6;
+    }
+    body {
+        font-family: 'Manrope', sans-serif;
+        background: var(--cream);
+        color: #1e293b;
+        scroll-behavior: smooth;
+    }
+    h1, h2, h3, h4 {
+        font-family: 'Outfit', sans-serif;
+    }
+    .hero-bg {
+        background: linear-gradient(120deg, rgba(26,77,46,0.95) 0%, rgba(79,111,82,0.85) 100%), 
+                    url('https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?q=80&w=2013&auto=format&fit=crop') center/cover;
+    }
+    .glass {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    .stat-card {
+        transition: all 0.3s ease;
+    }
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    .badge {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .badge:hover {
+        transform: scale(1.08) rotate(2deg);
+    }
+    .badge-icon {
+        box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), inset 0 2px 4px 0 rgba(255,255,255,0.3);
+    }
+    .leaderboard-row {
+        transition: background 0.2s ease;
+    }
+    .leaderboard-row:hover {
+        background: #F8FAF9;
+    }
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+    }
+    .float-animation {
+        animation: float 6s ease-in-out infinite;
+    }
+    .nav-link {
+        position: relative;
+    }
+    .nav-link::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: -4px;
+        left: 0;
+        background-color: var(--leaf);
+        transition: width 0.3s ease;
+    }
+    .nav-link:hover::after {
+        width: 100%;
+    }
+</style>
+</head>
+<body class="antialiased">
+
+<!-- Navigation -->
+<nav class="fixed w-full z-50 bg-white/80 backdrop-blur-md shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+            <div class="flex items-center gap-2">
+                <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-[#1A4D2E] to-[#4F6F52] flex items-center justify-center">
+                    <i class="fa-solid fa-seedling text-white text-lg"></i>
+                </div>
+                <span class="text-xl font-bold text-[#1A4D2E]">Green Roots</span>
+            </div>
+            <div class="hidden md:flex items-center gap-8">
+                <a href="#mission" class="nav-link text-slate-700 hover:text-[#1A4D2E] font-medium">Mission</a>
+                <a href="#log" class="nav-link text-slate-700 hover:text-[#1A4D2E] font-medium">Log Tree</a>
+                <a href="#leaderboard" class="nav-link text-slate-700 hover:text-[#1A4D2E] font-medium">Leaderboard</a>
+                <a href="#badges" class="nav-link text-slate-700 hover:text-[#1A4D2E] font-medium">Badges</a>
+                <a href="#contributors" class="nav-link text-slate-700 hover:text-[#1A4D2E] font-medium">Contributors</a>
+            </div>
+            <a href="#log" class="bg-[#1A4D2E] hover:bg-[#4F6F52] text-white px-5 py-2.5 rounded-lg font-semibold transition-all shadow-md hover:shadow-lg">
+                Plant & Log
+            </a>
+            <button id="mobile-menu-btn" class="md:hidden text-[#1A4D2E]">
+                <i class="fa-solid fa-bars text-xl"></i>
+            </button>
+        </div>
+    </div>
+    <div id="mobile-menu" class="hidden md:hidden bg-white border-t">
+        <div class="px-4 py-3 space-y-3">
+            <a href="#mission" class="block text-slate-700 font-medium">Mission</a>
+            <a href="#log" class="block text-slate-700 font-medium">Log Tree</a>
+            <a href="#leaderboard" class="block text-slate-700 font-medium">Leaderboard</a>
+            <a href="#badges" class="block text-slate-700 font-medium">Badges</a>
+            <a href="#contributors" class="block text-slate-700 font-medium">Contributors</a>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero-bg min-h-screen flex items-center pt-16" id="home">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+            <div class="text-white">
+                <div class="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full mb-6">
+                    <i class="fa-solid fa-earth-americas text-[#E8DFCA]"></i>
+                    <span class="text-sm font-medium">Join 500+ Earth Guardians</span>
+                </div>
+                <h1 class="text-5xl lg:text-7xl font-extrabold leading-tight mb-6">
+                    Plant Trees.<br>Track Impact.<br><span class="text-[#E8DFCA]">Grow Hope.</span>
+                </h1>
+                <p class="text-lg lg:text-xl text-white/90 mb-8 leading-relaxed">
+                    Every tree you plant fights climate change, restores ecosystems, and creates a greener future. Log your plantings, earn badges, and inspire others to join the movement.
+                </p>
+                <div class="flex flex-wrap gap-4">
+                    <a href="#log" class="bg-[#E8DFCA] text-[#1A4D2E] px-8 py-4 rounded-xl font-bold text-lg hover:bg-white transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1">
+                        <i class="fa-solid fa-plus mr-2"></i>Log Your Tree
+                    </a>
+                    <a href="#leaderboard" class="bg-white/10 backdrop-blur-sm border-2 border-white/30 text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-white/20 transition-all">
+                        View Leaderboard
+                    </a>
+                </div>
+            </div>
+            <div class="hidden lg:block">
+                <div class="glass rounded-3xl p-8 float-animation">
+                    <h3 class="text-[#1A4D2E] text-2xl font-bold mb-6">Community Impact</h3>
+                    <div class="space-y-6">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
+                                    <i class="fa-solid fa-tree text-white"></i>
+                                </div>
+                                <span class="font-semibold text-slate-700">Trees Planted</span>
+                            </div>
+                            <span id="hero-trees" class="text-3xl font-extrabold text-[#1A4D2E]">0</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center">
+                                    <i class="fa-solid fa-users text-white"></i>
+                                </div>
+                                <span class="font-semibold text-slate-700">Contributors</span>
+                            </div>
+                            <span id="hero-contributors" class="text-3xl font-extrabold text-[#1A4D2E]">0</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center">
+                                    <i class="fa-solid fa-cloud text-white"></i>
+                                </div>
+                                <span class="font-semibold text-slate-700">CO₂ Offset</span>
+                            </div>
+                            <span id="hero-co2" class="text-3xl font-extrabold text-[#1A4D2E]">0 kg</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Dashboard -->
+<section class="py-16 bg-white" id="mission">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-3xl mx-auto mb-12">
+            <span class="text-[#4F6F52] font-semibold text-sm uppercase tracking-wider">Our Mission</span>
+            <h2 class="text-4xl lg:text-5xl font-extrabold text-[#1A4D2E] mt-3 mb-4">Reforest The Planet Together</h2>
+            <p class="text-slate-600 text-lg">We believe collective action creates massive change. By tracking every tree planted, we make environmental impact visible and celebrate those making a difference.</p>
+        </div>
+        
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="stat-card bg-gradient-to-br from-emerald-50 to-green-100 rounded-2xl p-8 border border-emerald-200">
+                <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center mb-4">
+                    <i class="fa-solid fa-tree text-white text-2xl"></i>
+                </div>
+                <div class="text-4xl font-extrabold text-[#1A4D2E] mb-2" id="stat-trees">0</div>
+                <div class="text-slate-600 font-medium">Total Trees Planted</div>
+            </div>
+            
+            <div class="stat-card bg-gradient-to-br from-blue-50 to-cyan-100 rounded-2xl p-8 border border-blue-200">
+                <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center mb-4">
+                    <i class="fa-solid fa-users text-white text-2xl"></i>
+                </div>
+                <div class="text-4xl font-extrabold text-[#1A4D2E] mb-2" id="stat-contributors">0</div>
+                <div class="text-slate-600 font-medium">Active Contributors</div>
+            </div>
+            
+            <div class="stat-card bg-gradient-to-br from-amber-50 to-orange-100 rounded-2xl p-8 border border-amber-200">
+                <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center mb-4">
+                    <i class="fa-solid fa-wind text-white text-2xl"></i>
+                </div>
+                <div class="text-4xl font-extrabold text-[#1A4D2E] mb-2" id="stat-co2">0</div>
+                <div class="text-slate-600 font-medium">KG CO₂ Offset Yearly</div>
+            </div>
+            
+            <div class="stat-card bg-gradient-to-br from-purple-50 to-pink-100 rounded-2xl p-8 border border-purple-200">
+                <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center mb-4">
+                    <i class="fa-solid fa-award text-white text-2xl"></i>
+                </div>
+                <div class="text-4xl font-extrabold text-[#1A4D2E] mb-2" id="stat-badges">0</div>
+                <div class="text-slate-600 font-medium">Badges Earned</div>
+            </div>
+        </div>
+
+        <div class="mt-12 bg-[#F5EFE6] rounded-2xl p-8 lg:p-12">
+            <div class="grid lg:grid-cols-2 gap-8 items-center">
+                <div>
+                    <h3 class="text-3xl font-bold text-[#1A4D2E] mb-4">Why Track Your Trees?</h3>
+                    <ul class="space-y-4">
+                        <li class="flex gap-3">
+                            <i class="fa-solid fa-circle-check text-[#4F6F52] text-xl mt-1"></i>
+                            <div>
+                                <strong class="text-slate-800">Measure Real Impact:</strong>
+                                <span class="text-slate-600"> See exactly how much CO₂ you're offsetting and habitats you're restoring.</span>
+                            </div>
+                        </li>
+                        <li class="flex gap-3">
+                            <i class="fa-solid fa-circle-check text-[#4F6F52] text-xl mt-1"></i>
+                            <div>
+                                <strong class="text-slate-800">Stay Motivated:</strong>
+                                <span class="text-slate-600"> Earn badges, climb the leaderboard, and celebrate milestones.</span>
+                            </div>
+                        </li>
+                        <li class="flex gap-3">
+                            <i class="fa-solid fa-circle-check text-[#4F6F52] text-xl mt-1"></i>
+                            <div>
+                                <strong class="text-slate-800">Inspire Others:</strong>
+                                <span class="text-slate-600"> Your log inspires friends, family, and communities to plant too.</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="bg-white rounded-xl p-6 shadow-lg">
+                    <h4 class="font-bold text-[#1A4D2E] mb-4">Did You Know?</h4>
+                    <div class="space-y-3 text-slate-600">
+                        <p><i class="fa-solid fa-leaf text-green-600 mr-2"></i>A mature tree absorbs ~21 kg of CO₂ per year</p>
+                        <p><i class="fa-solid fa-leaf text-green-600 mr-2"></i>One tree produces oxygen for 2 people daily</p>
+                        <p><i class="fa-solid fa-leaf text-green-600 mr-2"></i>Urban trees can reduce temperatures by 8°C</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Google Form Section -->
+<section class="py-20 bg-gradient-to-b from-white to-[#F5EFE6]" id="log">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <span class="text-[#4F6F52] font-semibold text-sm uppercase tracking-wider">Step 1</span>
+            <h2 class="text-4xl lg:text-5xl font-extrabold text-[#1A4D2E] mt-3 mb-4">Log Your Tree Planting</h2>
+            <p class="text-slate-600 text-lg max-w-2xl mx-auto">Finished planting? Take 30 seconds to log it. Your entry appears on the leaderboard instantly and helps us track global impact.</p>
+        </div>
+
+        <div class="bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-200">
+            <div class="bg-gradient-to-r from-[#1A4D2E] to-[#4F6F52] p-6">
+                <div class="flex items-center gap-3 text-white">
+                    <i class="fa-brands fa-wpforms text-2xl"></i>
+                    <h3 class="text-xl font-bold">Tree Planting Log Form</h3>
+                </div>
+            </div>
+            <div class="p-6 bg-amber-50 border-b border-amber-200">
+                <div class="flex gap-3">
+                    <i class="fa-solid fa-circle-info text-amber-600 text-xl mt-0.5"></i>
+                    <div class="text-sm text-amber-900">
+                        <strong>For Site Owner:</strong> Replace the iframe src below with your Google Form embed link. 
+                        Make sure your form collects: Name, Email, Number of Trees, Location, Date, and Photo URL.
+                        <a href="#" onclick="document.getElementById('setup-guide').classList.toggle('hidden'); return false;" class="underline font-semibold">View setup guide</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="setup-guide" class="hidden p-6 bg-slate-50 border-b text-sm text-slate-700">
+                <h4 class="font-bold text-[#1A4D2E] mb-3">How to Connect Your Google Form:</h4>
+                <ol class="list-decimal list-inside space-y-2">
+                    <li>Create a Google Form with fields: Name, Email, Trees Planted, Location, Date</li>
+                    <li>Click "Send" → &lt;&gt; Embed HTML → Copy the iframe code</li>
+                    <li>Replace the src in the iframe below</li>
+                    <li>For auto-updating leaderboard: Link form to Google Sheets → File → Share → Publish to web → CSV → Copy link</li>
+                    <li>Paste CSV link in the JAVASCRIPT section marked SHEETS_CSV_URL</li>
+                </ol>
+            </div>
+
+            <!-- PLACEHOLDER GOOGLE FORM - REPLACE SRC WITH YOUR FORM -->
+            <iframe 
+                src="https://docs.google.com/forms/d/e/1FAIpQLSfD_YourFormID_Here/viewform?embedded=true" 
+                width="100%" 
+                height="800" 
+                frameborder="0" 
+                marginheight="0" 
+                marginwidth="0"
+                class="w-full">
+                Loading…
+            </iframe>
+        </div>
+
+        <div class="mt-8 grid md:grid-cols-3 gap-4 text-center">
+            <div class="bg-white rounded-xl p-6 shadow-md">
+                <i class="fa-solid fa-camera text-3xl text-[#4F6F52] mb-3"></i>
+                <h4 class="font-bold text-slate-800 mb-1">Snap a Photo</h4>
+                <p class="text-sm text-slate-600">Capture your planting moment</p>
+            </div>
+            <div class="bg-white rounded-xl p-6 shadow-md">
+                <i class="fa-solid fa-location-dot text-3xl text-[#4F6F52] mb-3"></i>
+                <h4 class="font-bold text-slate-800 mb-1">Add Location</h4>
+                <p class="text-sm text-slate-600">Help us map global impact</p>
+            </div>
+            <div class="bg-white rounded-xl p-6 shadow-md">
+                <i class="fa-solid fa-trophy text-3xl text-[#4F6F52] mb-3"></i>
+                <h4 class="font-bold text-slate-800 mb-1">Earn Badges</h4>
+                <p class="text-sm text-slate-600">Unlock achievements instantly</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Leaderboard Section -->
+<section class="py-20 bg-white" id="leaderboard">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <span class="text-[#4F6F52] font-semibold text-sm uppercase tracking-wider">Community</span>
+            <h2 class="text-4xl lg:text-5xl font-extrabold text-[#1A4D2E] mt-3 mb-4">Top Planters Leaderboard</h2>
+            <p class="text-slate-600 text-lg">Celebrating our most dedicated earth guardians. Will you make the top 10?</p>
+        </div>
+
+        <div class="bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-200">
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-gradient-to-r from-[#1A4D2E] to-[#4F6F52] text-white">
+                        <tr>
+                            <th class="px-6 py-4 text-left font-bold">Rank</th>
+                            <th class="px-6 py-4 text-left font-bold">Planter</th>
+                            <th class="px-6 py-4 text-center font-bold">Trees</th>
+                            <th class="px-6 py-4 text-center font-bold">Badge</th>
+                            <th class="px-6 py-4 text-right font-bold">CO₂ Offset</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-body">
+                        <!-- Populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="mt-8 text-center">
+            <p class="text-slate-600">
+                <i class="fa-solid fa-rotate text-[#4F6F52] mr-2"></i>
+                Leaderboard updates automatically when new entri
